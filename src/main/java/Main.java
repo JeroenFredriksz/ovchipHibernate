@@ -1,12 +1,20 @@
 
+import domein.Adres;
+import domein.Product;
+import domein.Reiziger;
+import domein.dao.Adres.AdresDAO;
+import domein.dao.Adres.AdresDAOhibernate;
+import domein.dao.Reiziger.ReizigerDAOhibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
+import java.sql.Date;
 import java.sql.SQLException;
 
 /**
@@ -41,6 +49,7 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
         testFetchAll();
+        testDAOhibernate();
     }
 
     /**
@@ -62,5 +71,18 @@ public class Main {
         } finally {
             session.close();
         }
+    }
+
+    private static void testDAOhibernate() {
+        Session session = getSession();
+        session.beginTransaction();
+        ReizigerDAOhibernate reizigerDAOhibernate = new ReizigerDAOhibernate(session);
+        AdresDAOhibernate adresDAOhibernate = new AdresDAOhibernate(session, reizigerDAOhibernate);
+        reizigerDAOhibernate.setAdresDAO(adresDAOhibernate);
+
+        Reiziger reiziger = new Reiziger(7, "test", "test", "test", Date.valueOf("2002-02-02"));
+        Adres adres = new Adres(reiziger, 7, "test", "test", "test", "test");
+        reizigerDAOhibernate.save(reiziger);
+
     }
 }

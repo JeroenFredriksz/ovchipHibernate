@@ -8,7 +8,6 @@ public class Adres {
     @JoinColumn(name = "reiziger_id")
     private Reiziger reiziger;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int adres_id;
     private String postcode;
     private String huisnummer;
